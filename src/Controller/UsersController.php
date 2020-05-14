@@ -113,22 +113,34 @@ class UsersController extends AppController
         {
           $user = $this->User->patchEntity($user, $this->request->getData());
 
-          // if(!$user->getErrors)
-          // {
-          //   $image = $this->request->getData('image_file');
-          //   $name=$image->getClientFilename();
-          //   $targetPath=WWW_ROOT.'img'.DS.$name;
-          //   if($name)
-          //   {
-          //     $image->moveTo($targetPath);
-          //   }
-          // }
-          if ($this->User->save($user)) 
+          if(!$user->getErrors)
           {
-              $this->Flash->success(__('Your User has been saved.'));
-              return $this->redirect(['action' => 'index']);
+            $files = $this->request->getData('image_file');
+            
+            // Read the file data.
+            // $files->getStream();
+            // $files->getSize();
+            $name=$files->getClientFileName();
+            
+            $targetPath=WWW_ROOT.'img'.DS.$name;
+            if($name)
+            {
+              $files->moveTo($targetPath);
+            }
+            $user->image=$name;
+          
+            if ($this->User->save($user)) 
+            {
+                $this->Flash->success(__('Your User has been saved.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('Unable to add your User.'));
           }
-          $this->Flash->error(__('Unable to add your User.'));
+          else
+          {
+            $this->set('errors', $user_add->getErrors());
+            return $this->redirect(['action' => 'add']);
+          }
         }
       }
       else
@@ -158,12 +170,37 @@ class UsersController extends AppController
         else
         {
           $user=$this->User->patchEntity($user, $this->request->getData());
+
+          if(!$user->getErrors)
+          {
+            $files = $this->request->getData('image_file');
+            
+            // Read the file data.
+            // $files->getStream();
+            // $files->getSize();
+            $name=$files->getClientFileName();
+            
+            $targetPath=WWW_ROOT.'img'.DS.$name;
+            if($name)
+            {
+              $files->moveTo($targetPath);
+            }
+            $user->image=$name;
           
-          if ($this->User->save($user)) {
-              $this->Flash->success(__('Your User has been updated.'));
-              return $this->redirect(['action' => 'index']);
+            if ($this->User->save($user)) {
+                $this->Flash->success(__('Your User has been updated.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            else
+            {
+              $this->Flash->error(__('Unable to update your User.'));
+            }
           }
-          $this->Flash->error(__('Unable to update your User.'));
+          else
+          {
+            $this->set('errors', $user_add->getErrors());
+            return $this->redirect(['action' => 'index']);
+          }
         }
       }
       else

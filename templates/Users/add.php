@@ -1,6 +1,6 @@
-<?php  echo $this->Form->create(null, [
-    'url' => ['controller' => 'Users', 'action' => 'add']
-]); ?>
+<?php  
+    echo $this->Form->create(null, ['type' => 'file','url' => ['controller' => 'Users', 'action' => 'add']]);
+?>
     <h1>Add Article</h1>
 <?php
     echo $this->Form->control('user_name');

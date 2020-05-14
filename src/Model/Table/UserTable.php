@@ -40,11 +40,11 @@ class UserTable extends Table
             ->requirePresence('email','create')
             ->notEmpty('password',__('A password to protect for your account'));
         $validator
-            ->allowEmptyFile('image')
+            ->notEmptyFile('image')
             ->add('image',[
                 'mimeType'=>[
-                    'rule'=>['fileSize','<=','1MB'],
-                    'message'=>'Image file size must be less than 1MB.',
+                'rule'=>['fileSize','<=','1MB'],
+                'message'=>'Image file size must be less than 1MB.',
                 ],
             ]);
 
