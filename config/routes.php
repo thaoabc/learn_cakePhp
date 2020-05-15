@@ -71,6 +71,10 @@ $routes->scope('/', function (RouteBuilder $builder) {
     $builder->post('/Users/view/:id', ['controller' => 'Users', 'action' => 'view']);
     $builder->connect('/Users/edit/:id', ['controller' => 'Users', 'action' => 'edit','id']);
     $builder->connect('/Users/delete/:id', ['controller' => 'Users', 'action' => 'delete','id']);
+
+
+    $builder->connect('/Mail/sendMailOfUser',['controller'=>'Mail','action'=>'sendMailOfUser']);
+    $builder->connect('/Mail/sendMailOfAdmin',['controller'=>'Mail','action'=>'sendMailOfAdmin']);
     /*
      * ...and connect the rest of 'Pages' controller's URLs.
      */

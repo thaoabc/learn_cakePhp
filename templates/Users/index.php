@@ -7,6 +7,12 @@
         <td>
             <p><?= $this->Html->link("Logout", ['action' => 'logout']) ?></p>
         </td>
+        <td>
+            <p><?= $this->Html->link("Phần gửi mail của người dùng", ['controller'=>'Mail','action' => 'sendMailOfUser']) ?></p>
+        </td>
+        <!-- <td>
+            <p><?= $this->Html->link("Phần gửi mail của admin", ['controller'=>'Mail','action' => 'sendMailOfAdmin']) ?></p>
+        </td> -->
     </tr>
     <tr>
         <th>Name</th>

@@ -205,23 +205,31 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => MailTransport::class,
+            'className' => 'Mail',
             /*
              * The keys host, port, timeout, username, password, client and tls
              * are used in SMTP transports
              */
-            'host' => 'localhost',
-            'port' => 25,
-            'timeout' => 30,
+            // 'host' => 'localhost',
+            // 'port' => 25,
+            // 'timeout' => 30,
             /*
              * It is recommended to set these options through your environment or app_local.php
              */
             //'username' => null,
             //'password' => null,
+            // 'client' => null,
+            // 'tls' => false,
+            // 'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'username' => 'thao19011999@gmail.com',
+            'password' => 'Thom190119',
+            'className' => 'Smtp',
+            'tls' => true,
             'client' => null,
-            'tls' => false,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
-        ],
+        ]
     ],
 
     /*
@@ -243,6 +251,53 @@ return [
             //'charset' => 'utf-8',
             //'headerCharset' => 'utf-8',
         ],
+        'gmail' => [
+            'host' => 'smtp.gmail.com',
+            'port' => 587,
+            'username' => 'thao19011999@gmail.com',
+            'password' => 'Thom190119',
+            'className' => 'Smtp',
+            'tls' => true
+        ]
+        // 'smtp' => [
+        //     'transport' => 'Smtp',
+        //     'from' => array('site@localhost' => 'My Site'),
+        //     'host' => 'localhost',
+        //     'port' => 25,
+        //     'timeout' => 30,
+        //     'username' => 'user',
+        //     'password' => 'secret',
+        //     'client' => null,
+        //     'log' => false,
+        // ],
+        // 'fast' => [
+        //     'from' => 'you@localhost',
+        //     'sender' => null,
+        //     'to' => null,
+        //     'cc' => null,
+        //     'bcc' => null,
+        //     'replyTo' => null,
+        //     'readReceipt' => null,
+        //     'returnPath' => null,
+        //     'messageId' => true,
+        //     'subject' => null,
+        //     'message' => null,
+        //     'headers' => null,
+        //     'viewRender' => null,
+        //     'template' => false,
+        //     'layout' => false,
+        //     'viewVars' => null,
+        //     'attachments' => null,
+        //     'emailFormat' => null,
+        //     'transport' => 'Smtp',
+        //     'host' => 'localhost',
+        //     'port' => 25,
+        //     'timeout' => 30,
+        //     'username' => 'user',
+        //     'password' => 'secret',
+        //     'client' => null,
+        //     'log' => true,
+        // ]
     ],
 
     /*
