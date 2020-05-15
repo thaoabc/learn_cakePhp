@@ -75,6 +75,8 @@ $routes->scope('/', function (RouteBuilder $builder) {
 
     $builder->connect('/Mail/sendMailOfUser',['controller'=>'Mail','action'=>'sendMailOfUser']);
     $builder->connect('/Mail/sendMailOfAdmin',['controller'=>'Mail','action'=>'sendMailOfAdmin']);
+
+    $builder->connect('/Category',['controller'=>'Categories','action'=>'category']);
     /*
      * ...and connect the rest of 'Pages' controller's URLs.
      */
