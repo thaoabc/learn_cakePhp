@@ -30,8 +30,8 @@ class CategoriesController extends AppController
   public function category()
   {
     $this->loadmodel('Category');
-    $this->set('Categories', $this->Category->find("all"));
-    $this->set('list_cat',$this->Category->generateTreeList());
+    $this->set('all_list',$this->Category->all_list());
+    $this->set('categories',$this->Category->get_category());
   }
   
 }
