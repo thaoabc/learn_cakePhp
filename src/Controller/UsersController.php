@@ -30,27 +30,6 @@ class UsersController extends AppController
 
   public function login()
   {
-
-    //   if($this->request->is('post','put')){
-    //     $user_name = $_POST['user_name'];
-        //  $email = $_POST['email'];
-        //  $password=$_POST['password'];
-
-    //     $this->loadModel('User');
-
-    //     $user=$this->User->getInfor($user_name,$email,$password);
-
-    //     if($user){
-    //       $position=$this->Users->find()
-    //       ->select('position')->where(['email'=>$email]);
-    //       dd($position=='admin');
-    //       Session::write(User.position, $position);
-    //      //$this->Session->write("session",$user_name); //ghi session
-    //      $this->redirect(['action' => 'index']);//đăng nhập thành công chuyển trang thông tin
-    //     }else{
-    //       return $this->Flash->error("You entered the wrong account");
-    //     }
-    //  }
     $this->loadModel('User');
       if($this->request->is('post','put'))
       {
@@ -76,19 +55,36 @@ class UsersController extends AppController
   }
   public function index()
   {
-
     $this->loadModel('User');
-    $User =$this->User->getData();
+    $key=$this->request->getQuery('key');
+    if($key)
+    {
+      $query=$this->Users->find('all')->where(['Or'=>['user_name like'=>'%'.$key.'%','email like'=>'%'.$key.'%']]);
+    }
+    else
+    {
+      $query=$this->User->find('all')
+                        ->order(['id DESC']);
+    }
 
-    $this->set('database',$User);
+    $this->set('database',$this->paginate($query,['limit'=>'3']));
   }
 
   public function view($id)
   {
-    $user = $this->Users
-    ->get($id);
-
-    $this->set('user', $user);
+    if($this->request->is('post'))
+    {
+      echo $this->Users
+      ->get($id);
+      $this->autoRender = false;
+    }
+    else
+    {
+      $user = $this->Users
+      ->get($id);
+  
+      $this->set('user', $user);
+    }
   }
 
   public function add()
@@ -161,7 +157,7 @@ class UsersController extends AppController
           ->get($id);
       
       $this->set('User', $user);
-      if ($this->request->is(['post', 'put'])) {
+      if ($this->request->is(['post', 'put','submit'])) {
         $user_add = $this->User->newEntity($this->request->getData(),['validate' => 'update']);
         if ($user_add->getErrors()) {
           $this->set('errors', $user_add->getErrors());

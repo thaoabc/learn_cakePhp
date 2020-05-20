@@ -2,10 +2,10 @@
     <h2>Menu</h2>
     <ol>
     <?php
-    pr($categories);
+    //pr($categories);
         foreach($categories as $item)
         { ?>
-            <li> <?=$item ?></li>
+            <!-- <li> <?=$item ?></li> -->
             <?php
             // foreach ($all_list as $Category)
             // {
@@ -44,9 +44,15 @@
     <tr<?php echo $class;?>>
         <td><?php echo $Category['id']; ?>&nbsp;</td>
         <td><?php echo $Category['name']; ?>&nbsp;</td>
-        <td><?= isset($categories[$Category['parent_id']]) ? $categories[$Category['parent_id']] : 0; ?>&nbsp;</td>
+        <td><?= isset($categories[$Category['parent_id']]) ? $categories[$Category['parent_id']] : ''; ?>&nbsp;</td>
         <td><?php echo $Category['published']; ?>&nbsp;</td>
     </tr>
 <?php } ?>
     </table>
 </div>
+<?= $this->element('test')?>
+<style>
+    .altrow{
+        background-color: #ececec
+    }
+</style>

@@ -1,4 +1,13 @@
- <h1>Users</h1>
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Users</h1>
+
+<?= $this->Form->create(null,['type'=>'get']) ?>
+<?= $this->Form->control('key',['label'=>'Search','value'=>$this->request->getQuery('key')]) ?>
+<?= $this->Form->submit() ?>
+<?= $this->Form->end() ?>
+
 <table>
     <tr>
         <td>
@@ -22,6 +31,7 @@
         <th>Roles</th>
         <th>Edit</th>
         <th>Delete</th>
+        <!-- <th>View</th> -->
     </tr>
 
 <?php foreach ($database as $data): ?>
@@ -60,7 +70,86 @@
                 ['confirm' => 'Are you sure?'])
             ?>
         </td>
+        <!-- <td>
+            <button id="view" onclick="myFunction()" type="submit" value=< //$data->id >View</button>
+        </td> -->
+
     </tr>
 <?php endforeach; ?>
 
 </table>
+<ul  class='pagination'>
+    <?= $this->Paginator->prev() ?>
+    <?= $this->Paginator->numbers() ?>
+    <?= $this->Paginator->next() ?>
+</ul>
+<div class="result"></div>
+<!-- <script>
+    $(document).ready(function(){
+        $('button#view').on('submit', function(e){
+            var id = $('#view').val();
+            e.preventDefault();
+        if (name) 
+        {
+            $.ajax({
+                url: ' $this->Url->build(['controller'=>'Users','action'=>'view',$x]) ?>',
+                type: 'post',
+                dataType: 'json',
+                success: function(result){
+                    $('.result').html(result);
+                    }
+            });
+        }
+        });
+    });
+</script> -->
+
+<script type="text/javascript" src="jquery-1.3.2.js"> </script>
+
+<script type="text/javascript">
+
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("demo").innerHTML =
+      this.responseText;
+    }
+  };
+  xhttp.open("GET", "ajax_info.txt", true);
+  xhttp.send();
+}
+    // $(document).ready(function(){
+    // var response = '';
+    // $.ajax({ type: "GET",   
+    //         url: "Records.php",   
+    //         async: false,
+    //         success : function(text)
+    //         {
+    //             response = text;
+    //         }
+    // });
+
+    // alert(response);
+    // });
+
+//     $(document).ready(function() {
+
+//        $("#display").click(function() {                
+
+//          $.ajax({    //create an ajax request to display.php
+//            type: "GET",
+//            url: "display.php",             
+//            dataType: "html",   //expect html to be returned                
+//            success: function(response){                    
+//                $("#responsecontainer").html(response); 
+//                //alert(response);
+//            }
+
+//        });
+// });
+// });
+</script>
+
+</body>
+</html>

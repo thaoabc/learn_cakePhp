@@ -21,9 +21,8 @@ class CategoryTable extends Table
 
     public function get_category()
     {
-        $result=[];
         $query = $this->find('treeList', [
-            'keyPath' => 'parent_id',
+            'keyPath' => 'id',
             'valuePath'=>'name'
         ])
         ->toArray();
