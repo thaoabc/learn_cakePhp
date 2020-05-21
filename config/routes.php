@@ -72,7 +72,7 @@ $routes->scope('/', function (RouteBuilder $builder) {
     $builder->connect('/Users/delete/:id', ['controller' => 'Users', 'action' => 'delete','id']);
 
 
-    $builder->connect('/Mail/sendMailOfUser',['controller'=>'Mail','action'=>'sendMailOfUser']);
+    $builder->connect('/Mail/sendMailToUser',['controller'=>'Mail','action'=>'sendMailToUser']);
     $builder->connect('/Mail/sendMailOfAdmin',['controller'=>'Mail','action'=>'sendMailOfAdmin']);
 
     $builder->connect('/Category',['controller'=>'Categories','action'=>'category']);

@@ -28,8 +28,31 @@ use Cake\Controller\UsersController;
  */
 class MailController extends AppController
 {
-    public function sendMailOfUser()
+    public function sendMailToUser()
     {
+        if($this->request->is('post','put'))
+        {
+            $this->loadmodel('User');
+            // $user=$this->User->newEmptyEntity();
+            
+            $data=$this->request->getData();
+            $subject=$data["set_subject"];
+            $content=$data["content"];
+            $email=$this->Auth->User('email');
+            
+            // $Email = new CakeEmail();
+            // $Email->config('gmail');
+
+            $mailer = new Mailer('default');
+            $mailer->setFrom($this->Auth->User('email'))
+                ->setTo($email)
+                ->setSubject($subject)
+                ->deliver($content);
+        }
+    }
+    public function sendMailOfAdmin()
+    {
+        
         if($this->request->is('post','put'))
         {
             $this->loadmodel('User');
@@ -48,36 +71,4 @@ class MailController extends AppController
                 ->deliver($content);
         }
     }
-    public function sendMailOfAdmin()
-    {
-        
-        if($this->_isAdmin()!=true)
-        {
-        $this->Flash->error(__('Bạn không có quyền truy cập'));
-        return $this->redirect(['action' => 'index']);
-        }
-        if($this->request->is('post','put'))
-        {
-            // $this->loadmodel('User');
-            // $user=$this->User->newEmptyEntity();
-            dd($this->request->getData());
-            $mailer = new Mailer('default');
-            $mailer->setFrom(['me@example.com' => 'My Site'])
-                ->setTo('you@example.com')
-                ->setSubject('About')
-                ->deliver('My message');
-        }
-    }
-
-    function _isAdmin(){
-        $admin = FALSE;
-        $this->loadModel('User');
-        $role=$this->User->find()
-        ->select('position')->where(['email'=>$this->Auth->User('email')])->first();
-        //debug($role->position);
-        if($role->position==0)
-            $admin = TRUE;
-        //dd($admin);
-        return $admin; 
-      }
 }

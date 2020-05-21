@@ -89,13 +89,30 @@ class UsersController extends AppController
 
   public function add()
   {
-    
-    if($this->_isAdmin()!=true)
-    {
-      $this->Flash->error(__('Bạn không có quyền truy cập'));
-      return $this->redirect(['action' => 'index']);
-    }
     $this->loadModel('User');
+    
+    if($this->request->is('ajax')){
+      $user_add = $this->User->newEntity($this->request->getData(),['validate' => 'update']);
+        if ($user_add->getErrors()) 
+        {
+          $errors=$user_add->getErrors();
+          $result[] = array(
+            'username' => $errors['user_name'],
+            'email' => $errors['email']
+        );
+        json_encode($result);
+        }
+        else
+        {
+          
+        }
+    }
+    // if($this->_isAdmin()!=true)
+    // {
+    //   $this->Flash->error(__('Bạn không có quyền truy cập'));
+    //   return $this->redirect(['action' => 'index']);
+    // }
+    
     $user = $this->User->newEmptyEntity();
       if ($this->request->is('post','put')) 
       {

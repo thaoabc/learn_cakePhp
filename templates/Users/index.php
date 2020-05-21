@@ -11,13 +11,19 @@
 <table>
     <tr>
         <td>
-            <p><?= $this->Html->link("Add User", ['action' => 'add']) ?></p>
+        <?= 
+        $this->Form->input(
+            'Add Member',
+            ['type' => 'button','id'=>'add']
+            );
+        ?>
+            
         </td>
         <td>
             <p><?= $this->Html->link("Logout", ['action' => 'logout']) ?></p>
         </td>
         <td>
-            <p><?= $this->Html->link("Phần gửi mail của người dùng", ['controller'=>'Mail','action' => 'sendMailOfUser']) ?></p>
+            <p><?= $this->Html->link("Phần gửi mail của người dùng", ['controller'=>'Mail','action' => 'sendMailToUser']) ?></p>
         </td>
         <!-- <td>
             <p><?= $this->Html->link("Phần gửi mail của admin", ['controller'=>'Mail','action' => 'sendMailOfAdmin']) ?></p>
@@ -83,42 +89,99 @@
     <?= $this->Paginator->numbers() ?>
     <?= $this->Paginator->next() ?>
 </ul>
-<div class="result"></div>
-<!-- <script>
-    $(document).ready(function(){
-        $('button#view').on('submit', function(e){
-            var id = $('#view').val();
-            e.preventDefault();
-        if (name) 
-        {
-            $.ajax({
-                url: ' $this->Url->build(['controller'=>'Users','action'=>'view',$x]) ?>',
-                type: 'post',
-                dataType: 'json',
-                success: function(result){
-                    $('.result').html(result);
-                    }
-            });
-        }
-        });
-    });
-</script> -->
+<div id="error" style="color: red;"></div>
+<div id="form_add" style="display:none;border: solid 1px; padding: 20px; background: #ddd;">
+    <?= $this->Form->create(null, ['type' => 'file']); ?>
+    <?= $this->Form->control('user_name',['id'=>'user_name']); ?>
+    <?= $this->Form->control('email',['id'=>'email']); ?>
+    <?= $this->Form->control('password',['id'=>'password']); ?>
+    <?= $this->Form->input('position', array(
+        'type'=>'select',
+        'label'=>'Role',
+        'options'=>['admin','user'],
+        'value'=>2,
+        'id' => 'position'
+        )); ?>
+    <?= $this->Form->control('image_file',['type'=>'file','id'=>'image']); ?>
+    <a href = '#' id = 'btn_submit'>Add menmber</a>
+    <!-- <? $this->Form->control(__('Add Member',['id'=>'btn_submit'])); ?> -->
+    <?= $this->Form->end(); ?>
+</div>
+<div id='demo-ajax'>
+    
+</div>
 
-<script type="text/javascript" src="jquery-1.3.2.js"> </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 <script type="text/javascript">
 
-function loadDoc() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("demo").innerHTML =
-      this.responseText;
-    }
-  };
-  xhttp.open("GET", "ajax_info.txt", true);
-  xhttp.send();
-}
+    $("#btn_submit").on("click", function(){
+		 var username = $("#username").val();
+		 var email = $("#email").val();
+         var password = $("#password").val();
+         var position = $("#position").val();
+		// var error = $("#error");
+        var targeturl = '<?= $this->Url->build(["controller"=>"Users","action"=>"add"]); ?>';
+
+		// resert thẻ div thông báo trở về rỗng mỗi khi click nút đăng nhập
+		// error.html("");
+
+		// // Kiểm tra nếu username rỗng thì báo lỗi
+		// if (username == "") {
+		// 	error.html("Tên người dùng không được để trống");
+        //     alert("no");
+		// 	return false;
+		// }
+		// // Kiểm tra nếu password rỗng thì báo lỗi
+		// if (password == "") {
+		// 	error.html("Mật khẩu không được để trống");
+		// 	return false;
+		// }
+		
+		// Chạy ajax gửi thông tin username và password về server add
+		// để kiểm tra thông tin hợp lệ hay chưa
+		$.ajax({
+		  url: targeturl,
+		  type: "GET",
+		  data: { username : username,email:email,position:position, password : password },
+          dataType:'json',
+		  success : function(result){
+            var html = '';
+                        html += '<table border="1" cellspacing="0" cellpadding="10">';
+                        html += '<tr>';
+                           html += '<td>';
+                                html += 'Username';
+                                html += '</td>';
+                                html += '<td>';
+                                html += 'Email';
+                           html += '</td>';
+                        html += '<tr>';
+                         
+                        // Kết quả là một object json
+                        // Nên ta sẽ loop result
+                        $.each (result, function (key, item){
+                            html +=  '<tr>';
+                                html +=  '<td>';
+                                    html +=  item['user_name'];
+                                html +=  '</td>';
+                                html +=  '<td>';
+                                    html +=  item['email'];
+                                html +=  '</td>';
+                            html +=  '<tr>';
+                        });
+                         
+                        html +=  '</table>';
+                         
+                        $('#result2').html(html);
+		  }
+		});
+
+	});
+
+    document.getElementById("add").onclick = function () {
+                document.getElementById("form_add").style.display = 'block';
+            };
+
     // $(document).ready(function(){
     // var response = '';
     // $.ajax({ type: "GET",   
