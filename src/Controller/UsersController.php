@@ -114,8 +114,9 @@ class UsersController extends AppController
       if ($this->User->save($user)) 
       {
           $this->NoticeSingupSuccess($user->email);
-          $res="Data Inserted Successfully:";
-          echo ($res);
+          return response()->json([
+            'thongbao' => 'ban da thêm thành công',
+          ]);
       }
       else
       {

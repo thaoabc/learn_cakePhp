@@ -127,12 +127,12 @@
             type: "POST",
             data: { username : username,email:email,position:position, password : password },
             dataType:'text',
-            success : function(data){
-                $("#message").html(data);
-                $("p").addClass("alert alert-success");
-                $('#result').html(data);
-                alert('yes');
-                },
+            success : function(ketqua){
+                if(ketqua)
+                {
+                    alert('thanh cong!');
+                }
+            },
             error: function(err) {
             alert(err);
             }
