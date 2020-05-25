@@ -19,6 +19,8 @@ namespace App\Controller;
 use App\Controller\Session;
 use Cake\Validation\Validator;
 use Cake\Event\EventInterface;
+use Cake\Mailer\Mailer;
+use Cake\Routing\Router;
 
 /**
  * Error Handling Controller
@@ -38,6 +40,7 @@ class UsersController extends AppController
         if($user)
         {
           $this->Auth->setUser($user);
+          $this->Flash->success("You are logged in");
           return $this->redirect(['controller'=>'Users','action'=>'index']);
         }
         else
@@ -49,8 +52,9 @@ class UsersController extends AppController
 
   public function logout()
   {
+    $this->Flash->success("You are logged out");
     $this->Auth->logout();
-    return $this->redirect(['controller' => 'Pages', 'action' => 'display','home']);
+    return $this->redirect(['controller' => 'Users', 'action' => 'login']);
     //return $this->redirect($this->Auth->logout());
   }
   public function index()
@@ -86,8 +90,7 @@ class UsersController extends AppController
       $this->set('user', $user);
     }
   }
-
-  public function add()
+  public function testAdd()
   {
     $this->loadModel('User');
     
@@ -107,12 +110,17 @@ class UsersController extends AppController
           
         }
     }
-    // if($this->_isAdmin()!=true)
-    // {
-    //   $this->Flash->error(__('Bạn không có quyền truy cập'));
-    //   return $this->redirect(['action' => 'index']);
-    // }
+  }
+
+  public function add()
+  {
     
+    if($this->_isAdmin()!=true)
+    {
+      $this->Flash->error(__('Bạn không có quyền truy cập'));
+      return $this->redirect(['action' => 'index']);
+    }
+    $this->loadModel('User');
     $user = $this->User->newEmptyEntity();
       if ($this->request->is('post','put')) 
       {
@@ -135,16 +143,16 @@ class UsersController extends AppController
             // $files->getSize();
             $name=$files->getClientFileName();
             
-            $targetPath=WWW_ROOT.'img'.DS.$name;
+            $targetPath='img/uploads/'.$name;
             if($name)
             {
               $files->moveTo($targetPath);
             }
             $user->image=$name;
-          
             if ($this->User->save($user)) 
             {
                 $this->Flash->success(__('Your User has been saved.'));
+                $this->NoticeSingupSuccess($user->email);
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('Unable to add your User.'));
@@ -193,7 +201,7 @@ class UsersController extends AppController
             // $files->getSize();
             $name=$files->getClientFileName();
             
-            $targetPath=WWW_ROOT.'img'.DS.$name;
+            $targetPath='img/uploads/'.$name;
             if($name)
             {
               $files->moveTo($targetPath);
@@ -251,5 +259,76 @@ class UsersController extends AppController
         $admin = TRUE;
     //dd($admin);
     return $admin; 
+  }
+
+  function NoticeSingupSuccess($email)
+  {
+    if($this->request->is('post','put'))
+        {
+            $this->loadmodel('User');
+
+            $mailer = new Mailer('default');
+            $mailer->setFrom($this->Auth->User('email'))
+                ->setTo($email)
+                ->setSubject("Bạn đã đăng ký thành công")
+                ->deliver("Welcome to my home");
+        }
+  }
+  function resetPassword()
+  {
+    if($this->request->is('post','put'))
+    {
+      $this->loadmodel('User');
+      $data=$this->request->getData();
+      $email=$data["email"];
+      $passkey = uniqid();
+      $url=Router::url(['action'=>'sendNewPass',$passkey]);
+      $user=$this->User->find()->select()->where(['email'=>$email])->first();
+      $user->token=$passkey;
+      //$this->loadHelper('Html');
+      //$a=$this->Html->link("click",['controller'=>'Users','action'=>'sendNewPass',$passkey, 'target' => '_blank']);
+      if($this->User->save($user))
+      {
+        $mailer = new Mailer('default');
+        $mailer->setFrom('thao19011999@gmail.com')
+            ->setTo($email)
+            ->setSubject("Reset your password")
+            ->deliver($url);
+        if ($mailer->send()) 
+        {
+          $this->Flash->success(__('Check your email for your reset password link'));
+          return $this->redirect(['action'=>'login']);
+        } 
+        else 
+        {
+            $this->Flash->error(__('Error sending email: ') . $email->smtpError);
+        }
+      }
+    }
+  }
+  function sendNewPass($passkey)
+  {
+    if($this->request->is('post','put'))
+    {
+      $this->loadModel("User");
+      if($this->User->find("all")->where(['token'=>$passkey])->first())
+      {
+        $data=$this->request->getData();
+        $user_resetpass = $this->User->newEntity($this->request->getData(),['validate' => 'ResetPass']);
+        if($user_resetpass->getErrors())
+        {
+          
+        }
+        else
+        {
+          $this->Flash->success(__('Thử đăng nhập lại vào tài khoản của bạn'));
+          return $this->redirect(['action'=>'login']);
+        }
+      }
+    }
+    else
+    {
+      $this->set('passkey',$passkey);
+    }
   }
 }

@@ -50,4 +50,18 @@ class UserTable extends Table
 
         return $validator;
     }
+
+    public function validationResetPass($validator)
+    {
+        $validator
+            ->maxLength('password',6)
+            ->notEmpty('Password',__("Hãy nhập mật khẩu"));
+        $validator
+            ->add('confirm_password', 'no-misspelling', [
+                'rule' => ['compareWith', 'password'],
+                'message' => 'Mật khẩu không trùng khớp',
+            ]);
+
+        return $validator;
+    }
 }

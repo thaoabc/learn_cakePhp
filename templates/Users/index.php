@@ -10,21 +10,30 @@
 
 <table>
     <tr>
-        <td>
+        <th>
         <?= 
         $this->Form->input(
-            'Add Member',
+            'Add Member By Ajax',
             ['type' => 'button','id'=>'add']
             );
         ?>
             
-        </td>
-        <td>
+        </th>
+        <th>
+        <?= 
+        $this->Html->link(
+            'Add Member By Next Page',
+            ['action' => 'add']
+            );
+        ?>
+            
+        </th>
+        <th>
             <p><?= $this->Html->link("Logout", ['action' => 'logout']) ?></p>
-        </td>
-        <td>
+        </th>
+        <th>
             <p><?= $this->Html->link("Phần gửi mail của người dùng", ['controller'=>'Mail','action' => 'sendMailToUser']) ?></p>
-        </td>
+        </th>
         <!-- <td>
             <p><?= $this->Html->link("Phần gửi mail của admin", ['controller'=>'Mail','action' => 'sendMailOfAdmin']) ?></p>
         </td> -->
@@ -46,7 +55,7 @@
             <?= $this->Html->link($data->user_name, ['action' => 'view', $data->id]) ?>
         </td>
         <td>
-            <?= @$this->Html->image($data->image) ?>
+        <img src="<?= $this->Url->image('uploads/'.$data->image); ?>"; style="height:90px; width:80px">
         </td>
         <td>
             <?= $data->email ?>
@@ -106,6 +115,9 @@
     <a href = '#' id = 'btn_submit'>Add menmber</a>
     <!-- <? $this->Form->control(__('Add Member',['id'=>'btn_submit'])); ?> -->
     <?= $this->Form->end(); ?>
+</div>
+<div id='result2'>
+    
 </div>
 <div id='demo-ajax'>
     

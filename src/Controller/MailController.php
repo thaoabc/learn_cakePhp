@@ -19,7 +19,6 @@ namespace App\Controller;
 use Cake\Validation\Validator;
 use Cake\Event\EventInterface;
 use Cake\Mailer\Mailer;
-use Cake\Controller\UsersController;
 
 /**
  * Error Handling Controller

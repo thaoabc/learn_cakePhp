@@ -72,7 +72,7 @@ class AppController extends Controller
             ],
         ]);
 
-        $this->Auth->allow(['login','home']);
+        $this->Auth->allow(['login','home','resetPassword']);
         /*
          * Enable the following component for recommended CakePHP form protection settings.
          * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
