@@ -12,27 +12,11 @@
     <tr>
         <th>
         <?= 
-        $this->Form->input(
-            'Add Member By Ajax',
-            ['type' => 'button','id'=>'add']
-            );
+        $this->Form->button(
+            'Add Member By Ajax',array('id'=>'add')
+        );
         ?>
             
-        </th>
-        <th>
-        <?= 
-        $this->Html->link(
-            'Add Member By Next Page',
-            ['action' => 'add']
-            );
-        ?>
-            
-        </th>
-        <th>
-            <p><?= $this->Html->link("Logout", ['action' => 'logout']) ?></p>
-        </th>
-        <th>
-            <p><?= $this->Html->link("Phần gửi mail của người dùng", ['controller'=>'Mail','action' => 'sendMailToUser']) ?></p>
         </th>
         <!-- <td>
             <p><?= $this->Html->link("Phần gửi mail của admin", ['controller'=>'Mail','action' => 'sendMailOfAdmin']) ?></p>
@@ -44,6 +28,7 @@
         <th>Email</th>
         <th>Password</th>
         <th>Roles</th>
+        <th>View</th>
         <th>Edit</th>
         <th>Delete</th>
         <!-- <th>View</th> -->
@@ -76,12 +61,18 @@
             ?>
         </td>
         <td>
-            <?= $this->Html->link('Edit', ['action' => 'edit', $data->id]) ?>
+            <?= $this->Html->link("", ['action' => 'view', $data->id],array(
+            'class' => 'glyphicon glyphicon-eye-open'))
+            ?>
+        </td>
+        <td>
+            <?= $this->Html->link('', ['action' => 'edit', $data->id],array(
+            'class' => 'glyphicon glyphicon-pencil')) ?>
         </td>
         <td>
             <?= $this->Form->postLink(
-                'Delete',
-                ['action' => 'delete', $data->id],
+                '',
+                ['action' => 'delete', $data->id],array('class'=>'glyphicon glyphicon-trash'),
                 ['confirm' => 'Are you sure?'])
             ?>
         </td>
@@ -113,14 +104,8 @@
         )); ?>
     <?= $this->Form->control('image_file',['type'=>'file','id'=>'image']); ?>
     <a href = '#' id = 'btn_submit'>Add menmber</a>
-    <!-- <? $this->Form->control(__('Add Member',['id'=>'btn_submit'])); ?> -->
+    <!-- <? $this->Form->control(__('Add Member',array('id'=>'btn_submit'))); ?> -->
     <?= $this->Form->end(); ?>
-</div>
-<div id='result2'>
-    
-</div>
-<div id='demo-ajax'>
-    
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -128,64 +113,29 @@
 <script type="text/javascript">
 
     $("#btn_submit").on("click", function(){
-		 var username = $("#username").val();
+		 var username = $("#user_name").val();
 		 var email = $("#email").val();
          var password = $("#password").val();
          var position = $("#position").val();
+        //  var image_file=$("#image").files[0];
+        //  alert(image_file);
 		// var error = $("#error");
-        var targeturl = '<?= $this->Url->build(["controller"=>"Users","action"=>"add"]); ?>';
+        var targeturl = '<?= $this->Url->build(["controller"=>"Users","action"=>"testAdd"]); ?>';
 
-		// resert thẻ div thông báo trở về rỗng mỗi khi click nút đăng nhập
-		// error.html("");
-
-		// // Kiểm tra nếu username rỗng thì báo lỗi
-		// if (username == "") {
-		// 	error.html("Tên người dùng không được để trống");
-        //     alert("no");
-		// 	return false;
-		// }
-		// // Kiểm tra nếu password rỗng thì báo lỗi
-		// if (password == "") {
-		// 	error.html("Mật khẩu không được để trống");
-		// 	return false;
-		// }
-		
-		// Chạy ajax gửi thông tin username và password về server add
-		// để kiểm tra thông tin hợp lệ hay chưa
 		$.ajax({
-		  url: targeturl,
-		  type: "GET",
-		  data: { username : username,email:email,position:position, password : password },
-          dataType:'json',
-		  success : function(result){
-            var html = '';
-                        html += '<table border="1" cellspacing="0" cellpadding="10">';
-                        html += '<tr>';
-                           html += '<td>';
-                                html += 'Username';
-                                html += '</td>';
-                                html += '<td>';
-                                html += 'Email';
-                           html += '</td>';
-                        html += '<tr>';
-                         
-                        // Kết quả là một object json
-                        // Nên ta sẽ loop result
-                        $.each (result, function (key, item){
-                            html +=  '<tr>';
-                                html +=  '<td>';
-                                    html +=  item['user_name'];
-                                html +=  '</td>';
-                                html +=  '<td>';
-                                    html +=  item['email'];
-                                html +=  '</td>';
-                            html +=  '<tr>';
-                        });
-                         
-                        html +=  '</table>';
-                         
-                        $('#result2').html(html);
-		  }
+            url: targeturl,
+            type: "POST",
+            data: { username : username,email:email,position:position, password : password },
+            dataType:'text',
+            success : function(data){
+                $("#message").html(data);
+                $("p").addClass("alert alert-success");
+                $('#result').html(data);
+                alert('yes');
+                },
+            error: function(err) {
+            alert(err);
+            }
 		});
 
 	});

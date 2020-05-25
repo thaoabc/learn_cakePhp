@@ -64,7 +64,7 @@ $routes->scope('/', function (RouteBuilder $builder) {
 
     $builder->connect('/login',['controller'=>'Users','action'=>'login']);
     $builder->connect('/login/resetPassword',['controller'=>'Users','action'=>'resetPassword']);
-    $builder->connect('/login/sendNewPass/:passkey',['controller'=>'Users','action'=>'sendNewPass']);
+    $builder->connect('/login/sendNewPass',['controller'=>'Users','action'=>'sendNewPass']);
     $builder->connect('Users/logout',['controller'=>'Users','action'=>'logout']);
 
     $builder->connect('/home', ['controller' => 'Pages', 'action' => 'display','home']);

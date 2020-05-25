@@ -13,7 +13,8 @@
         }
     }
     echo $this->Form->control('email');
-    echo $this->Form->control('password');
+    echo "<h4>Password</h4>";
+    echo $this->Form->input('password',['type'=>'password']);
     echo "<h4>Position<br></h4>";
     echo $this->Form->input('position', array(
         'type'=>'select',
@@ -25,3 +26,22 @@
     echo $this->Form->button(__('Save User'));
     echo $this->Form->end();
 ?>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$(document).ready(function(){
+    $('input[type="password"]').after(' <input type="checkbox" class="check" /> Hiển thị mật khẩu');
+    $('.check').change(function(){
+        var prev = $(this).prev();
+        var value = prev.val();
+        var type = prev.attr('type');
+        var name = prev.attr('name');
+        var id = prev.attr('id');
+        var klass = prev.attr('class');
+        var new_type = (type == 'password') ? 'text' : 'password';
+        prev.remove();
+        $(this).before('<input type="'+new_type+'" value="' +value+ '" name="' +name+ '" value="' +value+ '"id="' +id+ '" class="' +klass+ '" />');
+
+    });
+})
+</script>

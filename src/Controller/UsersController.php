@@ -77,7 +77,7 @@ class UsersController extends AppController
   public function view($id)
   {
     if($this->request->is('post'))
-    {
+    {dd(1);
       echo $this->Users
       ->get($id);
       $this->autoRender = false;
@@ -93,22 +93,40 @@ class UsersController extends AppController
   public function testAdd()
   {
     $this->loadModel('User');
-    
     if($this->request->is('ajax')){
-      $user_add = $this->User->newEntity($this->request->getData(),['validate' => 'update']);
-        if ($user_add->getErrors()) 
-        {
-          $errors=$user_add->getErrors();
-          $result[] = array(
-            'username' => $errors['user_name'],
-            'email' => $errors['email']
-        );
-        json_encode($result);
-        }
-        else
-        {
-          
-        }
+      $user_name=$_POST['username'];
+      $email=$_POST['email'];
+      $password=$_POST['password'];
+      $position=$_POST['position'];
+      // $files = $_POST['image_file'];
+      // $name=$files->getClientFileName();
+      // $targetPath='img/uploads/'.$name;
+      // if($name)
+      // {
+      //   $files->moveTo($targetPath);
+      // }
+      $user = $this->User->newEmptyEntity();
+      $user->user_name=$user_name;
+      $user->email=$email;
+      $user->password=$password;
+      $user->position=$position;
+      //$user->image=$name;
+      if ($this->User->save($user)) 
+      {
+          $this->NoticeSingupSuccess($user->email);
+          $res="Data Inserted Successfully:";
+          echo ($res);
+      }
+      else
+      {
+        $error="Not Inserted,Some Probelm occur.";
+        echo ($error);
+      }
+    }
+    else
+    {
+      $error="Not Inserted,Some Probelm occur.";
+              echo ($error);
     }
   }
 
@@ -132,15 +150,13 @@ class UsersController extends AppController
         }
         else
         {
+          //$rules->add($rules->isUnique(['email']));
           $user = $this->User->patchEntity($user, $this->request->getData());
 
           if(!$user->getErrors)
           {
             $files = $this->request->getData('image_file');
             
-            // Read the file data.
-            // $files->getStream();
-            // $files->getSize();
             $name=$files->getClientFileName();
             
             $targetPath='img/uploads/'.$name;
@@ -196,9 +212,6 @@ class UsersController extends AppController
           {
             $files = $this->request->getData('image_file');
             
-            // Read the file data.
-            // $files->getStream();
-            // $files->getSize();
             $name=$files->getClientFileName();
             
             $targetPath='img/uploads/'.$name;
@@ -279,6 +292,7 @@ class UsersController extends AppController
     if($this->request->is('post','put'))
     {
       $this->loadmodel('User');
+      $user = $this->User->newEmptyEntity();
       $data=$this->request->getData();
       $email=$data["email"];
       $passkey = uniqid();
@@ -293,11 +307,11 @@ class UsersController extends AppController
         $mailer->setFrom('thao19011999@gmail.com')
             ->setTo($email)
             ->setSubject("Reset your password")
-            ->deliver($url);
+            ->deliver($passkey);
         if ($mailer->send()) 
         {
           $this->Flash->success(__('Check your email for your reset password link'));
-          return $this->redirect(['action'=>'login']);
+          //return $this->redirect(['action'=>'login']);
         } 
         else 
         {
@@ -306,29 +320,52 @@ class UsersController extends AppController
       }
     }
   }
-  function sendNewPass($passkey)
+  function sendNewPass()
   {
     if($this->request->is('post','put'))
     {
-      $this->loadModel("User");
-      if($this->User->find("all")->where(['token'=>$passkey])->first())
+      $data=$this->request->getData();
+      if(isset($data['checkkey']))
       {
-        $data=$this->request->getData();
-        $user_resetpass = $this->User->newEntity($this->request->getData(),['validate' => 'ResetPass']);
-        if($user_resetpass->getErrors())
+        $this->loadModel("User");
+        $passkey=$data['checkkey'];
+        if($this->User->find("all")->where(['token'=>$passkey])->first())
         {
-          
+          $this->set('passkey',$passkey);
         }
         else
         {
-          $this->Flash->success(__('Thử đăng nhập lại vào tài khoản của bạn'));
-          return $this->redirect(['action'=>'login']);
+          $this->Flash->error(__('Nhập không đúng mã'));
         }
       }
-    }
-    else
-    {
-      $this->set('passkey',$passkey);
+      else
+      {
+        $this->loadModel("User");
+        $passkey=$data['passkey'];
+        if($this->User->find("all")->where(['token'=>$passkey])->first())
+        {
+          $data=$this->request->getData();
+          $user_resetpass = $this->User->newEntity($this->request->getData(),['validate' => 'ResetPass']);
+          if($user_resetpass->getErrors())
+          {
+            dd($user_resetpass->getErrors());
+          }
+          else
+          {
+            $user=$this->User->find()->select()->where(['token'=>$passkey])->first();
+            $user=$this->User->patchEntity($user, $this->request->getData());
+            if($this->User->save($user))
+            {
+              $this->Flash->success(__('Thử đăng nhập lại vào tài khoản của bạn'));
+              return $this->redirect(['action'=>'login']);
+            }
+            else
+            {
+              $this->Flash->error(__('Chưa thay được mật khẩu'));
+            }
+          }
+        }
+      }
     }
   }
 }

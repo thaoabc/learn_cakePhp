@@ -25,9 +25,20 @@
         <tr>
         <th>Password</th>
             <td>
-                <?php echo $this->Form->input('password',['value'=>$User->password,'id'=>'password']); ?>
+                <?php echo $this->Form->input('password',['type'=>'password','value'=>$User->password,'id'=>'password']); ?>
             </td>
         </tr>
+
+        <th>Position</th>
+            <td>
+                <?= $this->Form->input('position', array(
+                    'type'=>'select',
+                    'label'=>'Role',
+                    'options'=>['admin','user'],
+                    'value'=>2,
+                    'id'=>'position'
+                    )); ?>
+            </td>
 
         <tr>
         <th>Image</th>
@@ -43,10 +54,33 @@
 <?php echo $this->Form->end(); ?>
 
 <?= $this->Form->button('Demo',['id'=>'view','onclick'=>'myFunction()']); ?>
+<div id="demo" style="display:none">
 
-<div id="demo_name"></div>
-<div id="demo_email"></div>
-<div id="demo_pass"></div>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Position</th>
+    </tr>
+    <tr>
+        <td>
+            <?= $this->Form->input('Name',array('id'=>'demo_name')) ?>
+        </td>
+        <td>
+            <?= $this->Form->input('Email',array('id'=>'demo_email')) ?>
+        </td>
+        <td>
+            <?= $this->Form->input('Email',array('id'=>'demo_pass')) ?>
+        </td>
+        <td>
+            <?= $this->Form->input('Position',array('id'=>'demo_position')) ?>
+        </td>
+    </tr>
+
+</table>
+
+</div>
 <!-- <div class="preview"> <img id="thumb" width="100px" height="100px" src="/images/icons/128px/zurb.png" /> </div> -->
 <!-- <span class="wrap hotness">
 <form id="newHotnessForm" action="/playground/ajax_upload">
@@ -55,38 +89,49 @@
 
 <script src="/js/jquery.min.js" type="text/javascript"></script>  
 <script src="/js/ajaxupload.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script>
+<!--Demo project -->
 function myFunction() {
   var user_name = document.getElementById("user_name").value;
   var password=document.getElementById("password").value;
   var email=document.getElementById("email").value;
-  document.getElementById("demo_name").innerHTML = user_name;
-  document.getElementById("demo_email").innerHTML = email;
-  document.getElementById("demo_pass").innerHTML = password;
+  var position=document.getElementById("position").value;
+
+  document.getElementById("demo").style.display = 'block';
+  document.getElementById("demo_name").value = user_name;
+  document.getElementById("demo_email").value = email;
+  document.getElementById("demo_pass").value = password;
+  if(position==0)
+  {
+    document.getElementById("demo_position").value = "Admin";
+  }
+  else
+  {
+    document.getElementById("demo_position").value = "User";
+  }
 }
-// $(document).ready(function(){
-//     <-- Chọn vị trí ảnh thumbnail sẽ hiển thị -->
-//     var thumb = $('img#thumb');
-//     <-- Chọn input trong form có id là imageUpload -->
-//     new AjaxUpload('imageUpload', {
-//         // <-- Lấy thuộc tính action từ html -->     
-//         // action: $('form#newHotnessForm').attr('action'),
-//         // <-- Đặt tên để sử dụng với server side script -->
-//         // name: 'image',
-//         <-- Sau khi chọn file thêm class loading vào div preview -->
-//         onSubmit: function(file, extension) {
-//             $('div.preview').addClass('loading');
-//         },
-//         <-- Sau khi file upload xong bỏ class loadding và hiển thị ảnh thumbnail bằng cách thay đổi thuộc tính src -->
-//         onComplete: function(file, response) {
-//             thumb.load(function(){
-//                 $('div.preview').removeClass('loading');
-//                 thumb.unbind();
-//             });
-//             thumb.attr('src', response);
-//         }
-//     });
-// });
+
+<!--Input hiển thị mật khẩu -->
+$(document).ready(function(){
+    $('input[type="password"]').after(' <input type="checkbox" class="check" /> Hiển thị mật khẩu');
+    $('.check').change(function(){
+        var prev = $(this).prev();
+        var value = prev.val();
+        var type = prev.attr('type');
+        var name = prev.attr('name');
+        var id = prev.attr('id');
+        var klass = prev.attr('class');
+        var new_type = (type == 'password') ? 'text' : 'password';
+        prev.remove();
+        $(this).before('<input type="'+new_type+'" value="' +value+ '" name="' +name+ '" value="' +value+ '"id="' +id+ '" class="' +klass+ '" />');
+
+    });
+})
+
+<!--Hiển thị ảnh trước khi upload hình -->
+    
+
 </script>
 </body>
 </html>
