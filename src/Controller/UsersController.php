@@ -98,19 +98,19 @@ class UsersController extends AppController
       $email=$_POST['email'];
       $password=$_POST['password'];
       $position=$_POST['position'];
-      // $files = $_POST['image_file'];
-      // $name=$files->getClientFileName();
-      // $targetPath='img/uploads/'.$name;
-      // if($name)
-      // {
-      //   $files->moveTo($targetPath);
-      // }
+      $files = $_POST['image_file'];
+      $name=$files->getClientFileName();
+      $targetPath='img/uploads/'.$name;
+      if($name)
+      {
+        $files->moveTo($targetPath);
+      }
       $user = $this->User->newEmptyEntity();
       $user->user_name=$user_name;
       $user->email=$email;
       $user->password=$password;
       $user->position=$position;
-      //$user->image=$name;
+      $user->image=$name;
       if ($this->User->save($user)) 
       {
           $this->NoticeSingupSuccess($user->email);

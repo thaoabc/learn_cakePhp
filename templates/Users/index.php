@@ -102,7 +102,7 @@
         'value'=>2,
         'id' => 'position'
         )); ?>
-    <?= $this->Form->control('image_file',['type'=>'file','id'=>'image']); ?>
+    <?= $this->Form->input('image_file',['type'=>'file','id'=>'image']); ?>
     <a href = '#' id = 'btn_submit'>Add menmber</a>
     <!-- <? $this->Form->control(__('Add Member',array('id'=>'btn_submit'))); ?> -->
     <?= $this->Form->end(); ?>
@@ -113,30 +113,37 @@
 <script type="text/javascript">
 
     $("#btn_submit").on("click", function(){
-		 var username = $("#user_name").val();
-		 var email = $("#email").val();
-         var password = $("#password").val();
-         var position = $("#position").val();
-        //  var image_file=$("#image").files[0];
-        //  alert(image_file);
-		// var error = $("#error");
+		var username = $("#user_name").val();
+		var email = $("#email").val();
+        var password = $("#password").val();
+        var position = $("#position").val();
         var targeturl = '<?= $this->Url->build(["controller"=>"Users","action"=>"testAdd"]); ?>';
 
-		$.ajax({
-            url: targeturl,
-            type: "POST",
-            data: { username : username,email:email,position:position, password : password },
-            dataType:'text',
-            success : function(data){
-                $("#message").html(data);
-                $("p").addClass("alert alert-success");
-                $('#result').html(data);
-                alert('yes');
-                },
-            error: function(err) {
-            alert(err);
+        var fileInput = document.getElementById('image');
+        var filePath = fileInput.value; //lấy giá trị input theo id
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i; //các tập tin cho phép
+        //Kiểm tra định dạng
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Bạn chỉ có thể dùng ảnh dưới định dạng .jpeg/.jpg/.png/.gif extension.');
+            fileInput.value = '';
+            return false;
+        } else {
+            if (fileInput.files && fileInput.files[0]) {
+                image_file=$("#image").files[0];
+                $.ajax({
+                    url: targeturl,
+                    type: "POST",
+                    data: { username : username,email:email,position:position, password : password,image_file:image_file },
+                    dataType:'text',
+                    success : function(data){
+                        alert('yes');
+                        },
+                    error: function(err) {
+                    alert(err);
+                    }
+                });
             }
-		});
+        }
 
 	});
 
