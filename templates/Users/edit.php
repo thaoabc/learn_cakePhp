@@ -62,12 +62,18 @@
 
 <table>
     <tr>
+        <th>Avatar</th>
         <th>Name</th>
         <th>Email</th>
         <th>Password</th>
         <th>Position</th>
     </tr>
     <tr>
+        <td>
+            <div id="demo_avatar">
+                <img width="100px" src="<?= $this->Url->image('uploads/'.$User->image); ?>">
+            </div>
+        </td>
         <td>
             <?= $this->Form->input('Name',array('id'=>'demo_name')) ?>
         </td>
@@ -91,8 +97,6 @@
 </form>
 </span> -->
 
-<script src="/js/jquery.min.js" type="text/javascript"></script>  
-<script src="/js/ajaxupload.js" type="text/javascript"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script>
 <!--Demo project -->
@@ -149,6 +153,7 @@ $(document).ready(function(){
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById('viewImg').innerHTML = '<img style="width:100px; height: 100px;" src="' + e.target.result + '"/>';
+                    document.getElementById('demo_avatar').innerHTML = '<img style="width:100px; height: 100px;" src="' + e.target.result + '"/>';
                 };
                 reader.readAsDataURL(fileInput.files[0]);
             }

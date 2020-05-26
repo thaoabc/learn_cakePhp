@@ -3,18 +3,31 @@
 ?>
     <h1>Add Article</h1>
 <?php
-    echo $this->Form->control('user_name');
-    if($errors!=null)
+    echo $this->Form->control('user_name',array('required' => false, 'error' => true));
+    if(isset($errors['user_name']))
     {
-        $name_error=$errors['user_name'];
-        foreach($name_error as $error)
-        {
-            dd($error);
-        }
+        foreach($errors['user_name'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
     }
-    echo $this->Form->control('email');
+    echo $this->Form->control('email',array('required' => false, 'error' => true));
+    if(isset($errors['email']))
+    {
+        foreach($errors['email'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }
     echo "<h4>Password</h4>";
     echo $this->Form->input('password',['type'=>'password']);
+    if(isset($errors['password']))
+    {
+        foreach($errors['password'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }
     echo "<h4>Position<br></h4>";
     echo $this->Form->input('position', array(
         'type'=>'select',
@@ -22,12 +35,21 @@
         'options'=>['admin','user'],
         'value'=>2
         ));
-    echo $this->Form->control('image_file',['type'=>'file','id'=>'image','onchange'=>'showIMG()']);?>
+    echo $this->Form->control('image_file',['type'=>'file','id'=>'image','onchange'=>'showIMG()']);
+    if(isset($errors['image_file']))
+    {
+        foreach($errors['image_file'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }
+    ?>
+    
     <label for="" style="margin-left: 10px"> Ảnh hiển thị : </label>
     <div id="viewImg">
 
     </div>
-<?php
+<?php 
     echo $this->Form->button(__('Save User'));
     echo $this->Form->end();
 ?>

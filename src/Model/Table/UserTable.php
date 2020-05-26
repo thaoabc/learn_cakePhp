@@ -40,13 +40,20 @@ class UserTable extends Table
             ->requirePresence('email','create')
             ->notEmpty('password',__('A password to protect for your account'));
         $validator
-            ->notEmptyFile('image')
-            ->add('image',[
+            ->notEmptyFile('image_file', 'asafaasfs')
+            ->add('image_file',[
                 'mimeType'=>[
                 'rule'=>['fileSize','<=','1MB'],
                 'message'=>'Image file size must be less than 1MB.',
                 ],
-            ]);
+            ])
+            ->add('image_file',[
+                'mimeType2'=>[
+                'extension'=>['jpg'],
+                'message'=>'Image file size must be less than 1MB.',
+                ],
+            ])
+            ;
 
         return $validator;
     }
@@ -55,7 +62,7 @@ class UserTable extends Table
     {
         $validator
             ->maxLength('password',6)
-            ->notEmpty('Password',__("Hãy nhập mật khẩu"));
+            ->notEmpty('password',__("Hãy nhập mật khẩu"));
         $validator
             ->add('confirm_password', 'no-misspelling', [
                 'rule' => ['compareWith', 'password'],

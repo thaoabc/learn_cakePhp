@@ -40,6 +40,7 @@ class UsersController extends AppController
         if($user)
         {
           $this->Auth->setUser($user);
+          //if($this->)
           $this->Flash->success("You are logged in");
           return $this->redirect(['controller'=>'Users','action'=>'index']);
         }
@@ -71,13 +72,49 @@ class UsersController extends AppController
                         ->order(['id DESC']);
     }
 
+    if($this->request->is('ajax')){
+
+      // $user_add = $this->User->newEntity($this->request->getData(),['validate' => 'update']);
+      // if($user_add->getErrors())
+      // {
+      //   $this->set('errors',$user_add->getErrors());
+      // }
+      // else
+      // {
+        $files = $this->request->getData('image_file');
+        $name=$files->getClientFileName();
+        $targetPath='img/uploads/'.$name;
+        if($name)
+        {
+          $files->moveTo($targetPath);
+        }
+        $user = $this->User->newEmptyEntity();
+        $user->user_name=$this->request->getData('user_name');
+        $user->email=$this->request->getData('email');
+        $user->password=$this->request->getData('password');
+        $user->position=$this->request->getData('position');
+        $user->image=$name;
+        if ($this->User->save($user)) 
+        {
+            $this->NoticeSingupSuccess($user->email);
+            $this->response->body($user);
+        }
+        else
+        {
+          $error="Not Inserted,Some Probelm occur.";
+          echo ($error);
+        }
+      //}
+      
+    }
+
     $this->set('database',$this->paginate($query,['limit'=>'3']));
   }
 
   public function view($id)
   {
     if($this->request->is('post'))
-    {dd(1);
+    {
       echo $this->Users
       ->get($id);
       $this->autoRender = false;
@@ -94,35 +131,39 @@ class UsersController extends AppController
   {
     $this->loadModel('User');
     if($this->request->is('ajax')){
-      $user_name=$_POST['username'];
-      $email=$_POST['email'];
-      $password=$_POST['password'];
-      $position=$_POST['position'];
-      $files = $_POST['image_file'];
-      $name=$files->getClientFileName();
-      $targetPath='img/uploads/'.$name;
-      if($name)
-      {
-        $files->moveTo($targetPath);
-      }
-      $user = $this->User->newEmptyEntity();
-      $user->user_name=$user_name;
-      $user->email=$email;
-      $user->password=$password;
-      $user->position=$position;
-      $user->image=$name;
-      if ($this->User->save($user)) 
-      {
-          $this->NoticeSingupSuccess($user->email);
-          return response()->json([
-            'thongbao' => 'ban da thêm thành công',
-          ]);
-      }
-      else
-      {
-        $error="Not Inserted,Some Probelm occur.";
-        echo ($error);
-      }
+
+      // $user_add = $this->User->newEntity($this->request->getData(),['validate' => 'update']);
+      // if($user_add->getErrors())
+      // {
+      //   $this->set('errors',$user_add->getErrors());
+      // }
+      // else
+      // {
+        $files = $this->request->getData('image_file');
+        $name=$files->getClientFileName();
+        $targetPath='img/uploads/'.$name;
+        if($name)
+        {
+          $files->moveTo($targetPath);
+        }
+        $user = $this->User->newEmptyEntity();
+        $user->user_name=$this->request->getData('user_name');
+        $user->email=$this->request->getData('email');
+        $user->password=$this->request->getData('password');
+        $user->position=$this->request->getData('position');
+        $user->image=$name;
+        if ($this->User->save($user)) 
+        {
+            $this->NoticeSingupSuccess($user->email);
+            $this->response->body($user);
+        }
+        else
+        {
+          $error="Not Inserted,Some Probelm occur.";
+          echo ($error);
+        }
+      //}
+      
     }
     else
     {
@@ -147,43 +188,36 @@ class UsersController extends AppController
         if ($user_add->getErrors()) 
         {
           $this->set('errors', $user_add->getErrors());
-          return $this->redirect(['action' => 'add']);
         }
         else
         {
-          //$rules->add($rules->isUnique(['email']));
-          $user = $this->User->patchEntity($user, $this->request->getData());
-
-          if(!$user->getErrors)
-          {
-            $files = $this->request->getData('image_file');
-            
-            $name=$files->getClientFileName();
-            
-            $targetPath='img/uploads/'.$name;
-            if($name)
-            {
-              $files->moveTo($targetPath);
+            $email=$this->request->getData('email');
+            $checkmail=$this->User->find()->select()->where(['email'=>$email])->first();
+            if(isset($checkmail))
+            { 
+              $this->Flash->error(__('Tài khoản này đã tồn tại'));
             }
-            $user->image=$name;
-            if ($this->User->save($user)) 
+            else
             {
-                $this->Flash->success(__('Your User has been saved.'));
-                $this->NoticeSingupSuccess($user->email);
-                return $this->redirect(['action' => 'index']);
+              $files = $this->request->getData('image_file');
+            
+              $name=$files->getClientFileName();
+              
+              $targetPath='img/uploads/'.$name;
+              if($name)
+              {
+                $files->moveTo($targetPath);
+              }
+              $user->image=$name;
+              if ($this->User->save($user)) 
+              {
+                  $this->Flash->success(__('Your User has been saved.'));
+                  $this->NoticeSingupSuccess($user->email);
+                  return $this->redirect(['action' => 'index']);
+              }
+              $this->Flash->error(__('Unable to add your User.'));
             }
-            $this->Flash->error(__('Unable to add your User.'));
-          }
-          else
-          {
-            $this->set('errors', $user_add->getErrors());
-            return $this->redirect(['action' => 'add']);
-          }
         }
-      }
-      else
-      {
-        $this->set('errors',null);
       }
   }
 
@@ -209,8 +243,6 @@ class UsersController extends AppController
         {
           $user=$this->User->patchEntity($user, $this->request->getData());
 
-          if(!$user->getErrors)
-          {
             $files = $this->request->getData('image_file');
             
             $name=$files->getClientFileName();
@@ -230,12 +262,6 @@ class UsersController extends AppController
             {
               $this->Flash->error(__('Unable to update your User.'));
             }
-          }
-          else
-          {
-            $this->set('errors', $user_add->getErrors());
-            return $this->redirect(['action' => 'index']);
-          }
         }
       }
       else
@@ -336,6 +362,7 @@ class UsersController extends AppController
         }
         else
         {
+          $this->redirect(['action'=>'resetPassword']);
           $this->Flash->error(__('Nhập không đúng mã'));
         }
       }
@@ -345,24 +372,28 @@ class UsersController extends AppController
         $passkey=$data['passkey'];
         if($this->User->find("all")->where(['token'=>$passkey])->first())
         {
-          $data=$this->request->getData();
           $user_resetpass = $this->User->newEntity($this->request->getData(),['validate' => 'ResetPass']);
           if($user_resetpass->getErrors())
-          {
-            dd($user_resetpass->getErrors());
+          { 
+            $error=$user_resetpass->getErrors();
+            $this->set('errors',$error);
+            $this->set('passkey',$passkey);
+            $this->Flash->error(__('Chưa thay được mật khẩu'));
           }
           else
           {
             $user=$this->User->find()->select()->where(['token'=>$passkey])->first();
-            $user=$this->User->patchEntity($user, $this->request->getData());
+            $user->password=$data['password'];
+            
             if($this->User->save($user))
             {
-              $this->Flash->success(__('Thử đăng nhập lại vào tài khoản của bạn'));
+              $this->Flash->success(__('Đăng nhập vào tài khoản của bạn với mật khẩu mới'));
               return $this->redirect(['action'=>'login']);
             }
             else
             {
               $this->Flash->error(__('Chưa thay được mật khẩu'));
+              $this->set('passkey',$passkey);
             }
           }
         }

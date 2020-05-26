@@ -92,9 +92,30 @@
 <div id="error" style="color: red;"></div>
 <div id="form_add" style="display:none;border: solid 1px; padding: 20px; background: #ddd;">
     <?= $this->Form->create(null, ['type' => 'file']); ?>
-    <?= $this->Form->control('user_name',['id'=>'user_name']); ?>
-    <?= $this->Form->control('email',['id'=>'email']); ?>
-    <?= $this->Form->control('password',['id'=>'password']); ?>
+    <?= $this->Form->control('user_name',['id'=>'user_name']);
+    if(isset($errors['user_name']))
+    {
+        foreach($errors['user_name'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    } ?>
+    <?= $this->Form->control('email',['id'=>'email']); 
+    if(isset($errors['email']))
+    {
+        foreach($errors['email'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }?>
+    <?= $this->Form->control('password',['id'=>'password']); 
+    if(isset($errors['password']))
+    {
+        foreach($errors['password'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }?>
     <?= $this->Form->input('position', array(
         'type'=>'select',
         'label'=>'Role',
@@ -102,101 +123,72 @@
         'value'=>2,
         'id' => 'position'
         )); ?>
-    <?= $this->Form->input('image_file',['type'=>'file','id'=>'image']); ?>
-    <a href = '#' id = 'btn_submit'>Add menmber</a>
-    <!-- <? $this->Form->control(__('Add Member',array('id'=>'btn_submit'))); ?> -->
+    <?= $this->Form->input('image_file',['type'=>'file','id'=>'image_file']); 
+    if(isset($errors['image_file']))
+    {
+        foreach($errors['image_file'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }?>
+    <!-- <a href = '#' id = 'btn_submit'>Add menmber</a> -->
+    <?= $this->Form->button('Click me',array('id'=>'btn_submit','type'=>'button')); ?>
     <?= $this->Form->end(); ?>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
 <script type="text/javascript">
 
+
     $("#btn_submit").on("click", function(){
-		var username = $("#user_name").val();
+		var user_name = $("#user_name").val();
 		var email = $("#email").val();
         var password = $("#password").val();
         var position = $("#position").val();
-        var targeturl = '<?= $this->Url->build(["controller"=>"Users","action"=>"testAdd"]); ?>';
+        var targeturl = '<?= $this->Url->build(["controller"=>"Users","action"=>"index"]); ?>';
 
-<<<<<<< HEAD
-        var fileInput = document.getElementById('image');
+        var fileInput = document.getElementById('image_file');
         var filePath = fileInput.value; //lấy giá trị input theo id
         var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i; //các tập tin cho phép
-        //Kiểm tra định dạng
+        
+        // Kiểm tra định dạng
         if (!allowedExtensions.exec(filePath)) {
             alert('Bạn chỉ có thể dùng ảnh dưới định dạng .jpeg/.jpg/.png/.gif extension.');
             fileInput.value = '';
             return false;
         } else {
             if (fileInput.files && fileInput.files[0]) {
-                image_file=$("#image").files[0];
+                var image_file=fileInput.files[0];
+                var form = new FormData();
+                form.append('image_file', fileInput.files[0]);
+                form.append('user_name', user_name);
+                form.append('email', email);
+                form.append('password', password);
+                form.append('position', position);
+                
                 $.ajax({
                     url: targeturl,
                     type: "POST",
-                    data: { username : username,email:email,position:position, password : password,image_file:image_file },
+                    //data: { username : username,email:email,position:position, password : password,image_file:image_file },
+                    data:form,
                     dataType:'text',
-                    success : function(data){
-                        alert('yes');
-                        },
-                    error: function(err) {
-                    alert(err);
-                    }
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    success: function(data, status, xhr) {
+                        //var response = JSON.parse(xhr.responseText);
+                    },
                 });
-=======
-		$.ajax({
-            url: targeturl,
-            type: "POST",
-            data: { username : username,email:email,position:position, password : password },
-            dataType:'text',
-            success : function(ketqua){
-                if(ketqua)
-                {
-                    alert('thanh cong!');
-                }
-            },
-            error: function(err) {
-            alert(err);
->>>>>>> ac97b1583dbaff36262cceeec96e055f18d990a6
             }
         }
-
-	});
+    });
 
     document.getElementById("add").onclick = function () {
                 document.getElementById("form_add").style.display = 'block';
             };
 
-    // $(document).ready(function(){
-    // var response = '';
-    // $.ajax({ type: "GET",   
-    //         url: "Records.php",   
-    //         async: false,
-    //         success : function(text)
-    //         {
-    //             response = text;
-    //         }
-    // });
-
-    // alert(response);
-    // });
-
-//     $(document).ready(function() {
-
-//        $("#display").click(function() {                
-
-//          $.ajax({    //create an ajax request to display.php
-//            type: "GET",
-//            url: "display.php",             
-//            dataType: "html",   //expect html to be returned                
-//            success: function(response){                    
-//                $("#responsecontainer").html(response); 
-//                //alert(response);
-//            }
-
-//        });
-// });
-// });
 </script>
 
 </body>
