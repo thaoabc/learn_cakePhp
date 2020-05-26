@@ -119,6 +119,7 @@
         var position = $("#position").val();
         var targeturl = '<?= $this->Url->build(["controller"=>"Users","action"=>"testAdd"]); ?>';
 
+<<<<<<< HEAD
         var fileInput = document.getElementById('image');
         var filePath = fileInput.value; //lấy giá trị input theo id
         var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i; //các tập tin cho phép
@@ -142,6 +143,21 @@
                     alert(err);
                     }
                 });
+=======
+		$.ajax({
+            url: targeturl,
+            type: "POST",
+            data: { username : username,email:email,position:position, password : password },
+            dataType:'text',
+            success : function(ketqua){
+                if(ketqua)
+                {
+                    alert('thanh cong!');
+                }
+            },
+            error: function(err) {
+            alert(err);
+>>>>>>> ac97b1583dbaff36262cceeec96e055f18d990a6
             }
         }
 
