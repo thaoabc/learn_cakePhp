@@ -43,4 +43,14 @@ class CategoryTable extends Table
         // }
         return($query);
     }
+
+    public function validationAdd($validator)
+    {
+        $validator
+            ->minLength('name',2,__('Tên phải ít nhất 2 kí tự'))
+            ->maxLength('name',25,__('Tên nhập tối đa 25 kí tự'))
+            ->notEmpty('name', __('Điền thông tin đầy đủ'));
+
+        return $validator;
+    }
 }

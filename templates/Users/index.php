@@ -8,6 +8,51 @@
 <?= $this->Form->submit() ?>
 <?= $this->Form->end() ?>
 
+<div id="form_add" style="display:none;border: solid 1px; padding: 20px; background: #ddd;">
+    <?= $this->Form->create(null, ['type' => 'file']); ?>
+    <?= $this->Form->control('user_name',['id'=>'user_name']);
+    if(isset($errors['user_name']))
+    {
+        foreach($errors['user_name'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    } ?>
+    <?= $this->Form->control('email',['id'=>'email']); 
+    if(isset($errors['email']))
+    {
+        foreach($errors['email'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }?>
+    <?= $this->Form->control('password',['id'=>'password']); 
+    if(isset($errors['password']))
+    {
+        foreach($errors['password'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }?>
+    <?= $this->Form->input('position', array(
+        'type'=>'select',
+        'label'=>'Role',
+        'options'=>['admin','user'],
+        'value'=>2,
+        'id' => 'position'
+        )); ?>
+    <?= $this->Form->input('image_file',['type'=>'file','id'=>'image_file']); 
+    if(isset($errors['image_file']))
+    {
+        foreach($errors['image_file'] as $err)
+        { ?>
+            <p style='color:red'><?= $err; ?></p>
+        <?php }
+    }?>
+    <!-- <a href = '#' id = 'btn_submit'>Add menmber</a> -->
+    <?= $this->Form->button('Click me',array('id'=>'btn_submit','type'=>'button')); ?>
+    <?= $this->Form->end(); ?>
+</div>
 <table>
     <tr>
         <th>
@@ -81,6 +126,11 @@
         </td> -->
 
     </tr>
+    <tr>
+        <div id="content">
+            
+        </div>
+    </tr>
 <?php endforeach; ?>
 
 </table>
@@ -90,51 +140,7 @@
     <?= $this->Paginator->next() ?>
 </ul>
 <div id="error" style="color: red;"></div>
-<div id="form_add" style="display:none;border: solid 1px; padding: 20px; background: #ddd;">
-    <?= $this->Form->create(null, ['type' => 'file']); ?>
-    <?= $this->Form->control('user_name',['id'=>'user_name']);
-    if(isset($errors['user_name']))
-    {
-        foreach($errors['user_name'] as $err)
-        { ?>
-            <p style='color:red'><?= $err; ?></p>
-        <?php }
-    } ?>
-    <?= $this->Form->control('email',['id'=>'email']); 
-    if(isset($errors['email']))
-    {
-        foreach($errors['email'] as $err)
-        { ?>
-            <p style='color:red'><?= $err; ?></p>
-        <?php }
-    }?>
-    <?= $this->Form->control('password',['id'=>'password']); 
-    if(isset($errors['password']))
-    {
-        foreach($errors['password'] as $err)
-        { ?>
-            <p style='color:red'><?= $err; ?></p>
-        <?php }
-    }?>
-    <?= $this->Form->input('position', array(
-        'type'=>'select',
-        'label'=>'Role',
-        'options'=>['admin','user'],
-        'value'=>2,
-        'id' => 'position'
-        )); ?>
-    <?= $this->Form->input('image_file',['type'=>'file','id'=>'image_file']); 
-    if(isset($errors['image_file']))
-    {
-        foreach($errors['image_file'] as $err)
-        { ?>
-            <p style='color:red'><?= $err; ?></p>
-        <?php }
-    }?>
-    <!-- <a href = '#' id = 'btn_submit'>Add menmber</a> -->
-    <?= $this->Form->button('Click me',array('id'=>'btn_submit','type'=>'button')); ?>
-    <?= $this->Form->end(); ?>
-</div>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -152,7 +158,10 @@
         var fileInput = document.getElementById('image_file');
         var filePath = fileInput.value; //lấy giá trị input theo id
         var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i; //các tập tin cho phép
-        
+        if(user_name == ''||email==''||password==''||position==''||filePath==''){
+          alert('Vui lòng nhập đầy đủ các trường');
+          return false;
+        }
         // Kiểm tra định dạng
         if (!allowedExtensions.exec(filePath)) {
             alert('Bạn chỉ có thể dùng ảnh dưới định dạng .jpeg/.jpg/.png/.gif extension.');
@@ -177,9 +186,20 @@
                     contentType: false,
                     processData: false,
                     cache: false,
-                    success: function(data, status, xhr) {
-                        //var response = JSON.parse(xhr.responseText);
+                    success: function(data) {
+                        alert("Thêm bản ghi thành công");
+                        document.getElementById("form_add").style.display = 'none';
+                        //$('#content').html(data);
+                        window.location.reload(1);
+                        // if(data.success) {
+                        //     alert(data.amount);                         
+                        // } else {
+                        //     alert(data.data.message);
+                        // }
                     },
+                    error: function(errorThrown){
+                        alert("errorThrown");
+                    } 
                 });
             }
         }

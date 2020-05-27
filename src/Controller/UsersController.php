@@ -97,12 +97,10 @@ class UsersController extends AppController
         if ($this->User->save($user)) 
         {
             $this->NoticeSingupSuccess($user->email);
-            $this->response->body($user);
-        }
-        else
-        {
-          $error="Not Inserted,Some Probelm occur.";
-          echo ($error);
+            echo json_encode($result, $user);
+            // wp_send_json_success(array(
+            //   'amount' => $user
+            // ));
         }
       //}
       
@@ -174,7 +172,6 @@ class UsersController extends AppController
 
   public function add()
   {
-    
     if($this->_isAdmin()!=true)
     {
       $this->Flash->error(__('Bạn không có quyền truy cập'));
@@ -185,6 +182,7 @@ class UsersController extends AppController
       if ($this->request->is('post','put')) 
       {
         $user_add = $this->User->newEntity($this->request->getData(),['validate' => 'update']);
+
         if ($user_add->getErrors()) 
         {
           $this->set('errors', $user_add->getErrors());
@@ -199,6 +197,8 @@ class UsersController extends AppController
             }
             else
             {
+              $user=$this->User->patchEntity($user, $this->request->getData());
+           
               $files = $this->request->getData('image_file');
             
               $name=$files->getClientFileName();
@@ -316,7 +316,7 @@ class UsersController extends AppController
   }
   function resetPassword()
   {
-    if($this->request->is('post','put'))
+    if($this->request->is('post','put') && !empty($this->request->getData('email')))
     {
       $this->loadmodel('User');
       $user = $this->User->newEmptyEntity();
@@ -337,7 +337,8 @@ class UsersController extends AppController
             ->deliver($passkey);
         if ($mailer->send()) 
         {
-          $this->Flash->success(__('Check your email for your reset password link'));
+          
+          echo json_encode($result,'success');
           //return $this->redirect(['action'=>'login']);
         } 
         else 
@@ -384,9 +385,11 @@ class UsersController extends AppController
           {
             $user=$this->User->find()->select()->where(['token'=>$passkey])->first();
             $user->password=$data['password'];
-            
+            pr($data['password']);
+            pr($user->password);
             if($this->User->save($user))
             {
+              dd($user);
               $this->Flash->success(__('Đăng nhập vào tài khoản của bạn với mật khẩu mới'));
               return $this->redirect(['action'=>'login']);
             }
@@ -397,6 +400,21 @@ class UsersController extends AppController
             }
           }
         }
+      }
+    }
+  }
+
+  public function destroytoken()
+  {
+    if($this->request->is('ajax')){
+      $this->loadModel('User');
+      $email_token=$this->request->getData('email_token');
+      $user_pass=$this->User->find()->select()->where(['email'=>$email_token])->first();
+      $user_pass->token='';
+      if($this->User->save($user_pass))
+      {
+        echo json_encode($result, $user_pass);
+        wp_die(); 
       }
     }
   }

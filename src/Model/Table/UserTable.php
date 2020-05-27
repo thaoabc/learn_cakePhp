@@ -47,12 +47,12 @@ class UserTable extends Table
                 'message'=>'Image file size must be less than 1MB.',
                 ],
             ])
-            ->add('image_file',[
-                'mimeType2'=>[
-                'extension'=>['jpg'],
-                'message'=>'Image file size must be less than 1MB.',
-                ],
-            ])
+            // ->add('image_file',[
+            //     'mimeType2'=>[
+            //     'extension'=>['jpg'],
+            //     'message'=>'Image file size must be less than 1MB.',
+            //     ],
+            // ])
             ;
 
         return $validator;

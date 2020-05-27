@@ -72,7 +72,7 @@ class AppController extends Controller
             ],
         ]);
 
-        $this->Auth->allow(['login','home','resetPassword','sendNewPass']);
+        $this->Auth->allow(['login','home','resetPassword','sendNewPass','destroytoken']);
 
         $this->set('user_name',$this->Auth->user('user_name'));
 

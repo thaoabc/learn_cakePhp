@@ -30,7 +30,8 @@
             <th>ID</th>
             <th>Name</th>
             <th>Parent ID</th>
-            <th>Published</th>            
+            <th>Edit</th>
+            <th>Delete</th>       
             <th class="actions"><?php __('Actions');?></th>
     </tr>
     <?php
@@ -45,7 +46,14 @@
         <td><?php echo $Category['id']; ?>&nbsp;</td>
         <td><?php echo $Category['name']; ?>&nbsp;</td>
         <td><?= isset($categories[$Category['parent_id']]) ? $categories[$Category['parent_id']] : ''; ?>&nbsp;</td>
-        <td><?php echo $Category['published']; ?>&nbsp;</td>
+        <td>
+            <?= $this->Form->postLink('', ['action' => 'edit', $Category->id],array(
+            'class' => 'glyphicon glyphicon-pencil')) ?>
+        </td>
+        <td>
+            <?= $this->Form->postLink('', ['action' => 'delete', $Category->id],array(
+            'class' => 'glyphicon glyphicon-trash')) ?>
+        </td>
     </tr>
 <?php } ?>
     </table>
